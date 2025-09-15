@@ -3,7 +3,6 @@ import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router';
 import useAuthContext from '../hooks/useAuthContext';
 import authApiClient from '../services/auth-api-client';
-import apiClient from '../services/api-client';
 import useToast from '../hooks/useToast';
 
 function MyPayments() {
@@ -31,26 +30,24 @@ function MyPayments() {
 
   const handleSubscribe = async () => {
     setIsProcessing(true);
-    try {
-      // Call the initiate_payment endpoint
-      const response = await apiClient.post('/payment/initiate/', {
-        amount: 10, // Example amount, you can adjust this
+    try {      
+      const response = await authApiClient.post('/payment/initiate/', {
+        amount: 100, // Example amount, you can adjust this
         numItems: 1 // Example number of items
-      });
-      
+      });      
       // If successful, redirect to the payment URL
       if (response.data.payment_url) {
         // Store the current URL to return after payment
-        sessionStorage.setItem('paymentReturnUrl', window.location.pathname);
-        
-        // Redirect to payment gateway
-        window.location.href = response.data.payment_url;
+        sessionStorage.setItem('paymentReturnUrl', window.location.pathname);        
+        // Redirect to payment gateway        
+		window.location.href = response.data.payment_url;
       } else {
+		console.log(`Payment failed : ${response.data?.error}`); // ---------
         toast.addToast('Failed to initiate payment', 'error');
       }
     } catch (error) {
       console.error('Payment initiation error:', error);
-      toast.addToast('Failed to initiate subscription', 'error');
+      toast.addToast('Failed to initiate subscription', 'error'); // ----
     } finally {
       setIsProcessing(false);
     }

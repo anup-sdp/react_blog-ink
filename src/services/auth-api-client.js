@@ -11,7 +11,8 @@ authApiClient.interceptors.request.use(
   (config) => {
     const token = localStorage.getItem("authTokens");
     if (token) {
-      config.headers.Authorization = `${JSON.parse(token).access}`;
+		//console.log("in auth-api-client.js, token =", token);
+      config.headers.Authorization = `Bearer ${JSON.parse(token).access}`;
     }
     return config;
   },

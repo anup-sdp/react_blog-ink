@@ -5,7 +5,7 @@ import Footer from '../components/Footer';
 import CardSlider from '../components/CardSlider';
 import Sidebar from '../components/Sidebar';
 import useAuthContext from '../hooks/useAuthContext';
-import apiClient from '../services/api-client';
+import authApiClient from '../services/auth-api-client'; // Changed from apiClient to authApiClient
 
 function Home() {
   const { user } = useAuthContext();
@@ -17,33 +17,33 @@ function Home() {
   const [trendingBlogs, setTrendingBlogs] = useState([]);
 
   useEffect(() => {
-    // Fetch data for each section
     const fetchData = async () => {
+		if(!user) return; // ------------
       try {
-        // Fetch admins (staff users)
-        const adminsRes = await apiClient.get('/users/', { params: { is_staff: true } });
+        // Fetch admins (staff users) - using authApiClient		
+        const adminsRes = await authApiClient.get('/users/', { params: { is_staff: true } });
         setAdmins(adminsRes.data.results);
 
-        // Fetch regular users (non-staff)
-        const usersRes = await apiClient.get('/users/', { params: { is_staff: false } });
+        // Fetch regular users (non-staff) - using authApiClient
+        const usersRes = await authApiClient.get('/users/', { params: { is_staff: false } });
         setUsers(usersRes.data.results);
 
-        // Fetch categories
-        const categoriesRes = await apiClient.get('/categories/');
+        // Fetch categories - using authApiClient
+        const categoriesRes = await authApiClient.get('/categories/');
         setCategories(categoriesRes.data.results);
 
-        // Fetch free blogs
-        const freeBlogsRes = await apiClient.get('/posts/free-blogs/');
+        // Fetch free blogs - using authApiClient
+        const freeBlogsRes = await authApiClient.get('/posts/free-blogs/');
         setFreeBlogs(freeBlogsRes.data);
 
-        // Fetch premium blogs (if user is subscribed or staff)
+        // Fetch premium blogs (if user is subscribed or staff) - using authApiClient
         if (user && (user.is_subscribed || user.is_staff)) {
-          const premiumBlogsRes = await apiClient.get('/posts/premium-blogs/');
+          const premiumBlogsRes = await authApiClient.get('/posts/premium-blogs/');
           setPremiumBlogs(premiumBlogsRes.data);
         }
 
-        // Fetch trending blogs (all blogs for now)
-        const trendingBlogsRes = await apiClient.get('/posts/');
+        // Fetch trending blogs (all blogs for now) - using authApiClient
+        const trendingBlogsRes = await authApiClient.get('/posts/');
         setTrendingBlogs(trendingBlogsRes.data.results);
       } catch (error) {
         console.error('Error fetching data:', error);

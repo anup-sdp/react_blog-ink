@@ -5,6 +5,7 @@ import useAuthContext from '../hooks/useAuthContext';
 import useToast from '../hooks/useToast';
 
 function Login() {
+	console.log("in login function");
   const { loginUser } = useAuthContext();
   const navigate = useNavigate();
   const toast = useToast();
@@ -13,6 +14,7 @@ function Login() {
 
   const onSubmit = async (data) => {
     const result = await loginUser(data);
+	console.log(result.data);
     if (result.success) {
       navigate('/');
     } else {

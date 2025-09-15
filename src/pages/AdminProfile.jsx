@@ -1,9 +1,9 @@
-// src/pages/AdminProfile.jsx
 import { useState, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import useAuthContext from '../hooks/useAuthContext';
 import authApiClient from '../services/auth-api-client';
 import useToast from '../hooks/useToast';
+import Layout from '../components/Layout';
 
 function AdminProfile() {
   const { user } = useAuthContext();
@@ -58,7 +58,7 @@ function AdminProfile() {
   };
 
   return (
-    <div className="bg-white p-6 rounded-2xl shadow-lg">
+    <Layout>
       <h1 className="text-2xl font-bold mb-6 text-gray-800">Admin Profile</h1>
       
       <div className="border-b border-gray-200 mb-6">
@@ -258,7 +258,7 @@ function AdminProfile() {
           )}
         </div>
       )}
-    </div>
+    </Layout>
   );
 }
 

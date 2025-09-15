@@ -7,6 +7,9 @@ import Profile from './pages/Profile';
 import AdminProfile from './pages/AdminProfile';
 import MyPayments from './pages/MyPayments';
 import AllPayments from './pages/AllPayments';
+import MyBlogs from './pages/MyBlogs';
+import AllBlogs from './pages/AllBlogs';
+import BlogForm from './pages/BlogForm';
 import Activate from './pages/Activate';
 import PasswordResetConfirm from './pages/PasswordResetConfirm';
 import PaymentSuccess from './pages/PaymentSuccess';
@@ -47,6 +50,26 @@ function AppRoutes() {
         <AdminRoute>
           <AllPayments />
         </AdminRoute>
+      } />
+      <Route path="/my-blogs" element={
+        <ProtectedRoute>
+          <MyBlogs />
+        </ProtectedRoute>
+      } />
+      <Route path="/all-blogs" element={
+        <AdminRoute>
+          <AllBlogs />
+        </AdminRoute>
+      } />
+      <Route path="/create-blog" element={
+        <ProtectedRoute>
+          <BlogForm />
+        </ProtectedRoute>
+      } />
+      <Route path="/edit-blog/:id" element={
+        <ProtectedRoute>
+          <BlogForm />
+        </ProtectedRoute>
       } />
     </Routes>
   );

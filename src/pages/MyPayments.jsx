@@ -1,9 +1,9 @@
-// src/pages/MyPayments.jsx
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router';
 import useAuthContext from '../hooks/useAuthContext';
 import authApiClient from '../services/auth-api-client';
 import useToast from '../hooks/useToast';
+import Layout from '../components/Layout';
 
 function MyPayments() {
   const { user } = useAuthContext();
@@ -40,21 +40,21 @@ function MyPayments() {
         // Store the current URL to return after payment
         sessionStorage.setItem('paymentReturnUrl', window.location.pathname);        
         // Redirect to payment gateway        
-		window.location.href = response.data.payment_url;
+        window.location.href = response.data.payment_url;
       } else {
-		console.log(`Payment failed : ${response.data?.error}`); // ---------
+        console.log(`Payment failed : ${response.data?.error}`);
         toast.addToast('Failed to initiate payment', 'error');
       }
     } catch (error) {
       console.error('Payment initiation error:', error);
-      toast.addToast('Failed to initiate subscription', 'error'); // ----
+      toast.addToast('Failed to initiate subscription', 'error');
     } finally {
       setIsProcessing(false);
     }
   };
 
   return (
-    <div className="bg-white p-6 rounded-2xl shadow-lg">
+    <Layout>
       <h1 className="text-2xl font-bold mb-6 text-gray-800">My Payments</h1>
       
       {!user?.is_subscribed && (
@@ -117,7 +117,7 @@ function MyPayments() {
           </tbody>
         </table>
       </div>
-    </div>
+    </Layout>
   );
 }
 

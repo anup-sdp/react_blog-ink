@@ -1,8 +1,8 @@
-// src/pages/Profile.jsx
 import { useState, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import useAuthContext from '../hooks/useAuthContext';
 import useToast from '../hooks/useToast';
+import Layout from '../components/Layout';
 
 function Profile() {
   const { user, updateUserProfile, changePassword } = useAuthContext();
@@ -57,7 +57,7 @@ function Profile() {
   };
 
   return (
-    <div className="bg-white p-6 rounded-2xl shadow-lg">
+    <Layout>
       <h1 className="text-2xl font-bold mb-6 text-gray-800">My Profile</h1>
       
       <div className="border-b border-gray-200 mb-6">
@@ -236,7 +236,7 @@ function Profile() {
           </button>
         </form>
       )}
-    </div>
+    </Layout>
   );
 }
 

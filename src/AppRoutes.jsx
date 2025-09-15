@@ -9,6 +9,9 @@ import MyPayments from './pages/MyPayments';
 import AllPayments from './pages/AllPayments';
 import Activate from './pages/Activate';
 import PasswordResetConfirm from './pages/PasswordResetConfirm';
+import PaymentSuccess from './pages/PaymentSuccess';
+import PaymentFail from './pages/PaymentFail';
+import PaymentCancel from './pages/PaymentCancel';
 import ProtectedRoute from './components/ProtectedRoute';
 import AdminRoute from './components/AdminRoute';
 
@@ -20,6 +23,9 @@ function AppRoutes() {
       <Route path="/register" element={<Register />} />
       <Route path="/activate/:uid/:token" element={<Activate />} />
       <Route path="/password/reset/confirm/:uid/:token" element={<PasswordResetConfirm />} />
+      <Route path="/payment/success" element={<PaymentSuccess />} />
+      <Route path="/payment/fail" element={<PaymentFail />} />
+      <Route path="/payment/cancel" element={<PaymentCancel />} />
       
       {/* Protected Routes */}
       <Route path="/profile" element={

@@ -1,7 +1,9 @@
 // src/pages/MyPayments.jsx
 import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router';
 import useAuthContext from '../hooks/useAuthContext';
 import authApiClient from '../services/auth-api-client';
+import apiClient from '../services/api-client';
 import useToast from '../hooks/useToast';
 
 function MyPayments() {
@@ -9,6 +11,8 @@ function MyPayments() {
   const [payments, setPayments] = useState([]);
   const toast = useToast();
   const [loading, setLoading] = useState(true);
+  const [isProcessing, setIsProcessing] = useState(false);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchPayments = async () => {
@@ -26,12 +30,29 @@ function MyPayments() {
   }, [toast]);
 
   const handleSubscribe = async () => {
+    setIsProcessing(true);
     try {
-      // This would typically initiate a payment process
-      // For now, we'll just show a message
-      toast.addToast('Subscription feature coming soon!', 'info');
+      // Call the initiate_payment endpoint
+      const response = await apiClient.post('/payment/initiate/', {
+        amount: 10, // Example amount, you can adjust this
+        numItems: 1 // Example number of items
+      });
+      
+      // If successful, redirect to the payment URL
+      if (response.data.payment_url) {
+        // Store the current URL to return after payment
+        sessionStorage.setItem('paymentReturnUrl', window.location.pathname);
+        
+        // Redirect to payment gateway
+        window.location.href = response.data.payment_url;
+      } else {
+        toast.addToast('Failed to initiate payment', 'error');
+      }
     } catch (error) {
+      console.error('Payment initiation error:', error);
       toast.addToast('Failed to initiate subscription', 'error');
+    } finally {
+      setIsProcessing(false);
     }
   };
 
@@ -45,9 +66,10 @@ function MyPayments() {
           <p className="mb-4">Get access to exclusive premium content and features!</p>
           <button
             onClick={handleSubscribe}
-            className="bg-white text-orange-500 py-2 px-6 rounded-lg font-semibold hover:bg-gray-100 transition"
+            disabled={isProcessing}
+            className="bg-white text-orange-500 py-2 px-6 rounded-lg font-semibold hover:bg-gray-100 transition disabled:opacity-50 disabled:cursor-not-allowed"
           >
-            Subscribe Now
+            {isProcessing ? 'Processing...' : 'Subscribe Now'}
           </button>
         </div>
       )}

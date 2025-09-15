@@ -2,6 +2,7 @@ import axios from "axios";
 
 const authApiClient = axios.create({
   baseURL: "https://drf-blog-ink.vercel.app/api/v1", // my deployed drf app
+  //baseURL: "http://127.0.0.1:8000/api/v1",
 });
 
 export default authApiClient;

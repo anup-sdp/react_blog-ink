@@ -5,22 +5,22 @@ import Footer from './Footer';
 
 function Layout({ children }) {
   return (
-    <div className="min-h-screen flex flex-col bg-cover bg-center bg-fixed" 
+    <div className="min-h-screen bg-cover bg-center bg-fixed" 
          style={{ backgroundImage: "url('/images/background1.jpg')" }}>
-      <Navbar />
-      <Sidebar />
-      
-      <div className="flex flex-1 pt-16 md:pl-64">
-        <main className="flex-1 p-6">
-          <div className="max-w-[1440px] mx-auto my-16">
-            <div className="bg-white/80 rounded-xl shadow-xl p-6">
+		<div className='h-[50px]'></div>
+      <div className="max-w-[1440px] mx-auto">
+        <div className="bg-white/60 rounded-xl shadow-xl overflow-hidden">
+          <Navbar />
+          <div className="flex flex-col md:flex-row">
+            <Sidebar />
+            <main className="flex-1 p-6">
               {children}
-            </div>
+            </main>
           </div>
-        </main>
+          <Footer />
+        </div>
       </div>
-      
-      <Footer />
+	  <div className='h-[50px]'></div>
     </div>
   );
 }

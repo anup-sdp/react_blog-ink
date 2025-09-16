@@ -1,3 +1,4 @@
+// src/components/Sidebar.jsx
 import { Link, useLocation } from 'react-router';
 import { useSidebar } from '../context/SidebarContext';
 import { 
@@ -9,7 +10,8 @@ import {
   FaSignOutAlt,
   FaBlog,
   FaEdit,
-  FaPlus
+  FaPlus,
+  FaTags // Add this import
 } from 'react-icons/fa';
 import useAuthContext from '../hooks/useAuthContext';
 
@@ -30,7 +32,10 @@ function Sidebar() {
       : []),
     { to: '/my-blogs', icon: <FaBlog />, label: 'My Blogs' },
     ...(user && (user.is_staff || user.is_superuser) 
-      ? [{ to: '/all-blogs', icon: <FaEdit />, label: 'All Blogs' }] 
+      ? [
+          { to: '/all-blogs', icon: <FaEdit />, label: 'All Blogs' },
+          { to: '/category-management', icon: <FaTags />, label: 'Categories' } // Add this item
+        ] 
       : []),
   ];
 

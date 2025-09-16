@@ -1,3 +1,4 @@
+// src/pages/MyBlogs.jsx
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router';
 import { useNavigate } from 'react-router';

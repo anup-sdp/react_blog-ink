@@ -10,6 +10,7 @@ import AllPayments from './pages/AllPayments';
 import MyBlogs from './pages/MyBlogs';
 import AllBlogs from './pages/AllBlogs';
 import BlogForm from './pages/BlogForm';
+import BlogDetails from './pages/BlogDetails'; // Import the new BlogDetails component
 import Activate from './pages/Activate';
 import PasswordResetConfirm from './pages/PasswordResetConfirm';
 import PaymentSuccess from './pages/PaymentSuccess';
@@ -29,6 +30,9 @@ function AppRoutes() {
       <Route path="/payment/success" element={<PaymentSuccess />} />
       <Route path="/payment/fail" element={<PaymentFail />} />
       <Route path="/payment/cancel" element={<PaymentCancel />} />
+      
+      {/* Blog Details Route */}
+      <Route path="/blog/:id" element={<BlogDetails />} />
       
       {/* Protected Routes */}
       <Route path="/profile" element={

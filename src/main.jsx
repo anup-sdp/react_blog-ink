@@ -11,13 +11,13 @@ import { SidebarProvider } from './context/SidebarContext';
 createRoot(document.getElementById('root')).render(
   <StrictMode>
     <ToastProvider>
-		<BrowserRouter>
-		  <SidebarProvider>
-        <AuthProvider>          
+      <BrowserRouter>
+        <SidebarProvider>
+          <AuthProvider>          
             <AppRoutes />          
-        </AuthProvider>
-      </SidebarProvider>    
-		</BrowserRouter>
-      </ToastProvider>
+          </AuthProvider>
+        </SidebarProvider>    
+      </BrowserRouter>
+    </ToastProvider>
   </StrictMode>
 );

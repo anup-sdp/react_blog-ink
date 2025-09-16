@@ -1,3 +1,4 @@
+// src/pages/AdminProfile.jsx
 import { useState, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import useAuthContext from '../hooks/useAuthContext';

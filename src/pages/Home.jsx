@@ -1,3 +1,4 @@
+// src/pages/Home.jsx
 import { useEffect, useState } from 'react';
 import CardSlider from '../components/CardSlider';
 import useAuthContext from '../hooks/useAuthContext';
@@ -89,61 +90,76 @@ function Home() {
 
   return (
     <Layout>
-      {/* Blogging History Section */}
-      <section className="mb-12 bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 text-white p-8 rounded-2xl shadow-xl">
-        <h2 className="text-3xl font-bold mb-4">The History of Blogging</h2>
-        <p className="mb-4">
-          Blogging has evolved significantly since its inception in the late 1990s. 
-          The first blogs were primarily online diaries where individuals shared their personal thoughts and experiences. 
-          Justin Hall, who began personal blogging in 1994 while a student at Swarthmore College, 
-          is generally recognized as one of the earliest bloggers.
-        </p>
-        <p>
-          As the internet grew, so did blogging platforms. 
-          In 1999, platforms like LiveJournal and Blogger emerged, making it easier for people without technical skills to start blogs. 
-          The early 2000s saw the rise of political blogs and the birth of the term "blogosphere." 
-          Today, blogging encompasses a wide range of formats and topics, 
-          from personal journals to professional news sites and corporate blogs.
-        </p>
-      </section>
-
-      {/* Admins Section */}
-      <section className="mb-12">
-        <h2 className="text-2xl font-bold mb-4 text-gray-800">Our Admins</h2>
-        <CardSlider items={admins} type="user" />
-      </section>
-
-      {/* Users Section */}
-      <section className="mb-12">
-        <h2 className="text-2xl font-bold mb-4 text-gray-800">Our Users</h2>
-        <CardSlider items={users} type="user" />
-      </section>
-
-      {/* Categories Section */}
-      <section className="mb-12">
-        <h2 className="text-2xl font-bold mb-4 text-gray-800">Categories</h2>
-        <CardSlider items={categories} type="category" />
-      </section>
-
-      {/* Free Blogs Section */}
-      <section className="mb-12">
-        <h2 className="text-2xl font-bold mb-4 text-gray-800">Free Blogs</h2>
-        <CardSlider items={freeBlogs} type="blog" />
-      </section>
-
-      {/* Premium Blogs Section (only if user is subscribed or staff) */}
-      {user && (user.is_subscribed || user.is_staff) && (
-        <section className="mb-12">
-          <h2 className="text-2xl font-bold mb-4 text-gray-800">Premium Blogs</h2>
-          <CardSlider items={premiumBlogs} type="blog" />
+      <div className="space-y-8">
+        {/* Blogging History Section */}
+        <section className="bg-gradient-to-r from-indigo-50 to-purple-50 p-8 rounded-2xl shadow-xl">
+          <h2 className="text-3xl font-bold mb-4 text-gray-800">The History of Blogging</h2>
+          <p className="mb-4 text-gray-700">
+            Blogging has evolved significantly since its inception in the late 1990s. 
+            The first blogs were primarily online diaries where individuals shared their personal thoughts and experiences. 
+            Justin Hall, who began personal blogging in 1994 while a student at Swarthmore College, 
+            is generally recognized as one of the earliest bloggers.
+          </p>
+          <p className="text-gray-700">
+            As the internet grew, so did blogging platforms. 
+            In 1999, platforms like LiveJournal and Blogger emerged, making it easier for people without technical skills to start blogs. 
+            The early 2000s saw the rise of political blogs and the birth of the term "blogosphere." 
+            Today, blogging encompasses a wide range of formats and topics, 
+            from personal journals to professional news sites and corporate blogs.
+          </p>
         </section>
-      )}
 
-      {/* Trending Blogs Section */}
-      <section className="mb-12">
-        <h2 className="text-2xl font-bold mb-4 text-gray-800">Trending Blogs</h2>
-        <CardSlider items={trendingBlogs} type="blog" />
-      </section>
+        {/* Admins Section */}
+        <section className="bg-blue-50 p-6 rounded-2xl shadow-lg">
+          <h2 className="text-2xl font-bold mb-4 text-gray-800">Our Admins</h2>
+          <CardSlider items={admins} type="user" />
+        </section>
+
+        {/* Users Section */}
+        <section className="bg-green-50 p-6 rounded-2xl shadow-lg">
+          <h2 className="text-2xl font-bold mb-4 text-gray-800">Our Users</h2>
+          <CardSlider items={users} type="user" />
+        </section>
+
+        {/* Categories Section */}
+        <section className="bg-yellow-50 p-6 rounded-2xl shadow-lg">
+          <h2 className="text-2xl font-bold mb-4 text-gray-800">Categories</h2>
+          <CardSlider items={categories} type="category" />
+        </section>
+
+        {/* Free Blogs Section */}
+        <section className="bg-pink-50 p-6 rounded-2xl shadow-lg">
+          <h2 className="text-2xl font-bold mb-4 text-gray-800">Free Blogs</h2>
+          <CardSlider items={freeBlogs} type="blog" />
+        </section>
+
+        {/* Premium Blogs Section (only if user is subscribed or staff) */}
+        {user && (user.is_subscribed || user.is_staff) ? (
+          <section className="bg-purple-50 p-6 rounded-2xl shadow-lg">
+            <div className="flex justify-between items-center mb-4">
+              <h2 className="text-2xl font-bold text-gray-800">Premium Blogs</h2>
+              <span className="bg-purple-200 text-purple-800 text-sm px-3 py-1 rounded-full">
+                Only for premium members and staff
+              </span>
+            </div>
+            <CardSlider items={premiumBlogs} type="blog" />
+          </section>
+        ) : (
+          <section className="bg-gray-100 p-6 rounded-2xl shadow-lg border-2 border-dashed border-gray-300">
+            <div className="text-center py-8">
+              <h2 className="text-2xl font-bold mb-4 text-gray-800">Premium Blogs</h2>
+              <p className="text-gray-600 mb-4">This section is only available to premium members and staff.</p>
+              <p className="text-gray-600">Upgrade to premium to access exclusive content!</p>
+            </div>
+          </section>
+        )}
+
+        {/* Trending Blogs Section */}
+        <section className="bg-indigo-50 p-6 rounded-2xl shadow-lg">
+          <h2 className="text-2xl font-bold mb-4 text-gray-800">Trending Blogs</h2>
+          <CardSlider items={trendingBlogs} type="blog" />
+        </section>
+      </div>
     </Layout>
   );
 }

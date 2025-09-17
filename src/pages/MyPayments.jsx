@@ -61,6 +61,7 @@ function MyPayments() {
         <div className="bg-gradient-to-r from-yellow-400 to-orange-500 text-white p-6 rounded-xl mb-6">
           <h2 className="text-xl font-bold mb-2">Upgrade to Premium</h2>
           <p className="mb-4">Get access to exclusive premium content and features!</p>
+          <p className="mb-4">Now only at 100 taka!</p>
           <button
             onClick={handleSubscribe}
             disabled={isProcessing}

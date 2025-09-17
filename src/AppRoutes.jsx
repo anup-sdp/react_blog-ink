@@ -18,6 +18,7 @@ import PaymentFail from './pages/PaymentFail';
 import PaymentCancel from './pages/PaymentCancel';
 import ProtectedRoute from './components/ProtectedRoute';
 import AdminRoute from './components/AdminRoute';
+import BlogDetail from './pages/BlogDetails';
 
 function AppRoutes() {
   return (
@@ -75,6 +76,11 @@ function AppRoutes() {
       <Route path="/edit-blog/:id" element={
         <ProtectedRoute>
           <BlogForm />
+        </ProtectedRoute>
+      } />
+	  <Route path="/blog/:id" element={
+        <ProtectedRoute>
+          <BlogDetail />
         </ProtectedRoute>
       } />
     </Routes>

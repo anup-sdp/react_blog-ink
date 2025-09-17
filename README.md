@@ -1,12 +1,66 @@
-# React + Vite
+# 📸 PhiBook Frontend
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Welcome to **PhiBook**, an exquisite social media haven where captivating moments unfold in a symphony of photos and videos, offering a visual tapestry of shared experiences and connections.  
 
-Currently, two official plugins are available:
+This repository contains the **React frontend** of the PhiBook project. The backend is built with **Django REST Framework + Djoser** for authentication and API management.  
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+---
 
-## Expanding the ESLint configuration
+## 🚀 Features
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+### 👤 User Accounts
+- User registration, login, and logout system.  
+- Email verification link sent on registration.  
+- Clicking the link activates the account, enabling login.  
+
+---
+
+### 📝 User Profiles
+- Users can **edit and save profile details** securely.  
+- Profile fields include:  
+  - Location (Dhaka, Chittagong, etc.)  
+  - Phone number  
+  - Other necessary details  
+
+---
+
+### 📊 Dashboard
+- **👍 Like/Unlike Posts** — logged-in users can like/unlike posts, with total likes displayed.  
+- **💬 Comment System** — users can comment on posts, edit, and delete their own comments.  
+- **📝 My Posts & Add Post** — view, update, and delete user’s posts. Create new posts with image, text, and optional YouTube video URL.  
+
+---
+
+### 🌍 Public Feed
+- Public section accessible to everyone.  
+- Displays user posts in an **organized, visually appealing format**.  
+
+---
+
+### 💳 Payment Gateway Integration
+- Designed to support demo monetization features, such as:  
+  - Premium memberships  
+
+---
+
+## 🛠️ Tech Stack
+- **Frontend**: React, Vite, Axios, React Router  
+- **Backend**: Django REST Framework (DRF), Djoser, PostgreSQL  
+- **Deployment**: Vercel (Frontend), vercel/supabase/claudinary (Backend)  
+
+---
+
+## 🔗 Project Links
+
+### 🔹 Frontend
+- GitHub: [anup-sdp/react_blog-ink](https://github.com/anup-sdp/react_blog-ink)  
+- Live Demo (Vercel): [https://drf-blog-ink.vercel.app/](https://drf-blog-ink.vercel.app/)  
+
+### 🔹 Backend
+- GitHub: [anup-sdp/drf-blog-ink](https://github.com/anup-sdp/drf-blog-ink)  
+- Swagger API Docs: [https://drf-blog-ink.vercel.app/api/v1/swagger/](https://drf-blog-ink.vercel.app/api/v1/swagger/)  
+
+---
+
+## 👨‍💻 Author
+Developed by **Anup Barua** for **Module 40 Exam**  

@@ -1,0 +1,58 @@
+module 40 aassignment
+react frontend of blog-ink
+
+cmd:
+npm create vite@latest
+project name: react_blog-ink
+>>React
+>>JavaScript
+--
+cd react_blog-ink
+npm install
+code .
+npm run dev
+--
+
+install tailwind css using vite: https://tailwindcss.com/docs/installation/using-vite
+npm install tailwindcss @tailwindcss/vite
+in vite.config.js add tailwind
+add @import "tailwindcss"; in css file which main.jsx imports
+-----
+
+npm install lucide-react  (icon library)
+npm install axios
+npm install react-hook-form
+npm i react-router 
+npm install react-icons
+npm install swiper
+npm i -D daisyui@latest
+//npm install tailwindcss@latest @tailwindcss/vite@latest daisyui@latest
+
+
+vercel: https://react-blog-ink.vercel.app/
+"username":"anup",
+"password":"aB@12345"
+
+"username":"admin",
+"password":"1234"
+===============
+github upload:
+git init
+git status
+git add .
+git status
+git commit -m "initial commit"
+git branch -M main
+git remote add origin https://github.com/anup-sdp/react_blog-ink.git
+git push -u origin main
+------------
+git add .
+git commit -m "v1.3" // sidebar at leftmost, cards expanding fix,
+git push -u origin main
+---
+git add .
+git commit -m "v1.6"
+git push -u origin main
+----
+see commit history: git log / git log --oneline
+see branches: git branch

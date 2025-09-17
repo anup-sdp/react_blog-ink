@@ -90,17 +90,17 @@ function Home() {
 
   return (
     <Layout>
-      <div className="space-y-8">
+      <div className="space-y-6 md:space-y-8 w-full">
         {/* Blogging History Section */}
-        <section className="bg-gradient-to-r from-indigo-50 to-purple-50 p-8 rounded-2xl shadow-xl">
-          <h2 className="text-3xl font-bold mb-4 text-gray-800">The History of Blogging</h2>
-          <p className="mb-4 text-gray-700">
+        <section className="bg-gradient-to-r from-indigo-50 to-purple-50 p-4 md:p-8 rounded-2xl shadow-xl w-full">
+          <h2 className="text-2xl md:text-3xl font-bold mb-4 text-gray-800">The History of Blogging</h2>
+          <p className="mb-4 text-gray-700 text-sm md:text-base">
             Blogging has evolved significantly since its inception in the late 1990s. 
             The first blogs were primarily online diaries where individuals shared their personal thoughts and experiences. 
             Justin Hall, who began personal blogging in 1994 while a student at Swarthmore College, 
             is generally recognized as one of the earliest bloggers.
           </p>
-          <p className="text-gray-700">
+          <p className="text-gray-700 text-sm md:text-base">
             As the internet grew, so did blogging platforms. 
             In 1999, platforms like LiveJournal and Blogger emerged, making it easier for people without technical skills to start blogs. 
             The early 2000s saw the rise of political blogs and the birth of the term "blogosphere." 
@@ -110,54 +110,66 @@ function Home() {
         </section>
 
         {/* Admins Section */}
-        <section className="bg-blue-50 p-6 rounded-2xl shadow-lg">
-          <h2 className="text-2xl font-bold mb-4 text-gray-800">Our Admins</h2>
-          <CardSlider items={admins} type="user" />
+        <section className="bg-blue-50 p-4 md:p-6 rounded-2xl shadow-lg w-full overflow-hidden">
+          <h2 className="text-xl md:text-2xl font-bold mb-4 text-gray-800">Our Admins</h2>
+          <div className="w-full overflow-hidden">
+            <CardSlider items={admins} type="user" />
+          </div>
         </section>
 
         {/* Users Section */}
-        <section className="bg-green-50 p-6 rounded-2xl shadow-lg">
-          <h2 className="text-2xl font-bold mb-4 text-gray-800">Our Users</h2>
-          <CardSlider items={users} type="user" />
+        <section className="bg-green-50 p-4 md:p-6 rounded-2xl shadow-lg w-full overflow-hidden">
+          <h2 className="text-xl md:text-2xl font-bold mb-4 text-gray-800">Our Users</h2>
+          <div className="w-full overflow-hidden">
+            <CardSlider items={users} type="user" />
+          </div>
         </section>
 
         {/* Categories Section */}
-        <section className="bg-yellow-50 p-6 rounded-2xl shadow-lg">
-          <h2 className="text-2xl font-bold mb-4 text-gray-800">Categories</h2>
-          <CardSlider items={categories} type="category" />
+        <section className="bg-yellow-50 p-4 md:p-6 rounded-2xl shadow-lg w-full overflow-hidden">
+          <h2 className="text-xl md:text-2xl font-bold mb-4 text-gray-800">Categories</h2>
+          <div className="w-full overflow-hidden">
+            <CardSlider items={categories} type="category" />
+          </div>
         </section>
 
         {/* Free Blogs Section */}
-        <section className="bg-pink-50 p-6 rounded-2xl shadow-lg">
-          <h2 className="text-2xl font-bold mb-4 text-gray-800">Free Blogs</h2>
-          <CardSlider items={freeBlogs} type="blog" />
+        <section className="bg-pink-50 p-4 md:p-6 rounded-2xl shadow-lg w-full overflow-hidden">
+          <h2 className="text-xl md:text-2xl font-bold mb-4 text-gray-800">Free Blogs</h2>
+          <div className="w-full overflow-hidden">
+            <CardSlider items={freeBlogs} type="blog" />
+          </div>
         </section>
 
         {/* Premium Blogs Section (only if user is subscribed or staff) */}
         {user && (user.is_subscribed || user.is_staff) ? (
-          <section className="bg-purple-50 p-6 rounded-2xl shadow-lg">
-            <div className="flex justify-between items-center mb-4">
-              <h2 className="text-2xl font-bold text-gray-800">Premium Blogs</h2>
-              <span className="bg-purple-200 text-purple-800 text-sm px-3 py-1 rounded-full">
+          <section className="bg-purple-50 p-4 md:p-6 rounded-2xl shadow-lg w-full overflow-hidden">
+            <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center mb-4 gap-2">
+              <h2 className="text-xl md:text-2xl font-bold text-gray-800">Premium Blogs</h2>
+              <span className="bg-purple-200 text-purple-800 text-xs sm:text-sm px-3 py-1 rounded-full w-fit">
                 Only for premium members and staff
               </span>
             </div>
-            <CardSlider items={premiumBlogs} type="blog" />
+            <div className="w-full overflow-hidden">
+              <CardSlider items={premiumBlogs} type="blog" />
+            </div>
           </section>
         ) : (
-          <section className="bg-gray-100 p-6 rounded-2xl shadow-lg border-2 border-dashed border-gray-300">
-            <div className="text-center py-8">
-              <h2 className="text-2xl font-bold mb-4 text-gray-800">Premium Blogs</h2>
-              <p className="text-gray-600 mb-4">This section is only available to premium members and staff.</p>
-              <p className="text-gray-600">Upgrade to premium to access exclusive content!</p>
+          <section className="bg-gray-100 p-4 md:p-6 rounded-2xl shadow-lg border-2 border-dashed border-gray-300 w-full">
+            <div className="text-center py-6 md:py-8">
+              <h2 className="text-xl md:text-2xl font-bold mb-4 text-gray-800">Premium Blogs</h2>
+              <p className="text-gray-600 mb-4 text-sm md:text-base">This section is only available to premium members and staff.</p>
+              <p className="text-gray-600 text-sm md:text-base">Upgrade to premium to access exclusive content!</p>
             </div>
           </section>
         )}
 
         {/* Trending Blogs Section */}
-        <section className="bg-indigo-50 p-6 rounded-2xl shadow-lg">
-          <h2 className="text-2xl font-bold mb-4 text-gray-800">Trending Blogs</h2>
-          <CardSlider items={trendingBlogs} type="blog" />
+        <section className="bg-indigo-50 p-4 md:p-6 rounded-2xl shadow-lg w-full overflow-hidden">
+          <h2 className="text-xl md:text-2xl font-bold mb-4 text-gray-800">Trending Blogs</h2>
+          <div className="w-full overflow-hidden">
+            <CardSlider items={trendingBlogs} type="blog" />
+          </div>
         </section>
       </div>
     </Layout>

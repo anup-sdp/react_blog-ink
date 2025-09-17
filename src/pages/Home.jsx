@@ -92,7 +92,7 @@ function Home() {
     <Layout>
       <div className="space-y-8">
         {/* Blogging History Section */}
-        <section className="bg-gradient-to-r from-indigo-100 to-purple-100 p-8 rounded-2xl shadow-xl">
+        <section className="bg-gradient-to-r from-indigo-50 to-purple-50 p-8 rounded-2xl shadow-xl">
           <h2 className="text-3xl font-bold mb-4 text-gray-800">The History of Blogging</h2>
           <p className="mb-4 text-gray-700">
             Blogging has evolved significantly since its inception in the late 1990s. 

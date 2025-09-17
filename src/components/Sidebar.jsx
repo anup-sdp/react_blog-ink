@@ -11,7 +11,7 @@ import {
   FaBlog,
   FaEdit,
   FaPlus,
-  FaTags
+  FaTags // Add this import
 } from 'react-icons/fa';
 import useAuthContext from '../hooks/useAuthContext';
 
@@ -34,7 +34,7 @@ function Sidebar() {
     ...(user && (user.is_staff || user.is_superuser) 
       ? [
           { to: '/all-blogs', icon: <FaEdit />, label: 'All Blogs' },
-          { to: '/category-management', icon: <FaTags />, label: 'Categories' }
+          { to: '/category-management', icon: <FaTags />, label: 'Categories' } // Add this item
         ] 
       : []),
   ];
@@ -50,10 +50,9 @@ function Sidebar() {
       )}
       
       {/* Sidebar */}
-      <div className={`${sidebarOpen ? 'translate-x-0' : '-translate-x-full'} 
-                      md:translate-x-0 fixed md:static inset-y-0 left-0 z-50 
-                      w-64 bg-blue-50 shadow-lg transform transition-transform duration-300 
-                      ease-in-out md:transform-none md:shadow-none rounded-xl`}>
+      <div className={`fixed top-16 left-0 z-50 w-64 h-[calc(100vh-4rem)] bg-white rounded-r-lg shadow-lg transform transition-transform duration-300 ease-in-out md:translate-x-0 ${
+        sidebarOpen ? 'translate-x-0' : '-translate-x-full'
+      }`}>
         <div className="p-4 border-b border-gray-200 flex justify-between items-center">
           <h2 className="text-xl font-bold text-gray-800">Menu</h2>
           <button 
@@ -72,7 +71,7 @@ function Sidebar() {
               className={`flex items-center space-x-3 p-3 rounded-lg transition ${
                 location.pathname === item.to 
                   ? 'bg-blue-500 text-white' 
-                  : 'text-gray-700 hover:bg-blue-100'
+                  : 'text-gray-700 hover:bg-gray-100'
               }`}
               onClick={() => {
                 // Close sidebar on mobile after navigation

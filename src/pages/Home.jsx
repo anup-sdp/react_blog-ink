@@ -23,16 +23,13 @@ function Home() {
         // Only fetch user data if user is authenticated
         if (isAuthenticated()) {
           console.log("User is authenticated, fetching user data...");
-          
-          // Fetch admins (staff users)
-          const adminsRes = await authApiClient.get('/users/', { params: { is_staff: true } });
-          console.log("Admins data:", adminsRes.data);
-          setAdmins(adminsRes.data.results);
-
-          // Fetch regular users (non-staff)
-          const usersRes = await authApiClient.get('/users/', { params: { is_staff: false } });
-          console.log("Users data:", usersRes.data);
-          setUsers(usersRes.data.results);
+          // Fetch all users and filter on frontend
+          const allUsersRes = await authApiClient.get('/users/');
+          const allUsers = allUsersRes.data.results || allUsersRes.data;
+          const adminUsers = allUsers.filter(user => user.is_staff === true);
+          const regularUsers = allUsers.filter(user => user.is_staff === false);
+          setAdmins(adminUsers);
+          setUsers(regularUsers);
         } else {
           console.log("User is not authenticated, skipping user data fetch");
           setAdmins([]);

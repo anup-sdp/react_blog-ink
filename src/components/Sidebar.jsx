@@ -49,8 +49,8 @@ function Sidebar() {
         ></div>
       )}
       
-      {/* Sidebar */}
-      <div className={`fixed top-16 left-0 z-50 w-64 h-[calc(100vh-4rem)] bg-white rounded-r-lg shadow-lg transform transition-transform duration-300 ease-in-out md:translate-x-0 ${
+      {/* Sidebar - Now positioned absolutely within the centered container */}
+      <div className={`absolute md:relative top-0 left-0 z-50 w-64 h-full bg-blue-100/60 rounded-lg shadow-lg transform transition-transform duration-300 ease-in-out md:translate-x-0 ${
         sidebarOpen ? 'translate-x-0' : '-translate-x-full'
       }`}>
         <div className="p-4 border-b border-gray-200 flex justify-between items-center">
@@ -63,7 +63,7 @@ function Sidebar() {
           </button>
         </div>
         
-        <div className="p-4 space-y-2 overflow-y-auto h-[calc(100vh-8rem)]">
+        <div className="p-4 space-y-2 overflow-y-auto h-[calc(100%-4rem)]">
           {sidebarItems.map((item) => (
             <Link
               key={item.to}

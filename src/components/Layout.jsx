@@ -8,16 +8,20 @@ function Layout({ children }) {
     <div className="min-h-screen flex flex-col bg-cover bg-center bg-fixed" 
          style={{ backgroundImage: "url('/images/background1.jpg')" }}>
       <Navbar />
-      <Sidebar />
       
-      <div className="flex flex-1 pt-16 md:pl-64">
-        <main className="flex-1 p-3 md:p-6 w-full min-w-0"> {/* Added w-full min-w-0 */}
-          <div className="max-w-7xl mx-auto w-full"> {/* Changed max-w and added w-full */}
-            <div className="bg-white/80 rounded-xl shadow-xl p-3 md:p-6"> {/* Responsive padding */}
-              {children}
+      {/* Centered container for sidebar + main */}
+      <div className="flex flex-1 pt-4 justify-center">
+        <div className="flex w-full max-w-7xl relative">
+          <Sidebar />
+          
+          <main className="flex-1 p-3 md:p-6 w-full min-w-0 md:ml-1">
+            <div className="w-full">
+              <div className="bg-white/60 rounded-xl shadow-xl p-3 md:p-6">
+                {children}
+              </div>
             </div>
-          </div>
-        </main>
+          </main>
+        </div>
       </div>
       
       <Footer />

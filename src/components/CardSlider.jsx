@@ -22,8 +22,11 @@ function CardSlider({ items, type }) {
         );
       case 'category':
         return (
-          <div className="bg-gradient-to-r from-green-400 to-blue-500 rounded-xl shadow-lg overflow-hidden h-32 flex items-center justify-center">
+          <div className="bg-gradient-to-r from-green-400 to-blue-500 rounded-xl shadow-lg overflow-hidden h-32 flex flex-col items-center justify-center p-3">
             <h3 className="font-bold text-xl text-white">{item.name}</h3>
+			<p className="text-gray-100 text-sm">
+               {item.description.length > 60 ? `${item.description.slice(0, 60)}...` : item.description}
+           </p>
           </div>
         );
       case 'blog':

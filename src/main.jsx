@@ -22,4 +22,4 @@ createRoot(document.getElementById('root')).render(
   </StrictMode>
 );
 
-// commit v1.1 try
+// try: git commit -m "v1.2b"

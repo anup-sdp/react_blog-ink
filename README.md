@@ -63,4 +63,5 @@ This repository contains the **React frontend** of the PhiBook project. The back
 ---
 
 ## 👨‍💻 Author
-Developed by **Anup Barua** for **Module 40 Exam**  
+Developed by **Anup Barua** 
+email: anupbarua30@gmail.com

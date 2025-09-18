@@ -44,13 +44,13 @@ function Sidebar() {
       {/* Mobile sidebar overlay */}
       {sidebarOpen && (
         <div 
-          className="fixed inset-0 z-40 bg-black bg-opacity-50 md:hidden"
+          className="fixed inset-0 z-40 bg-black/20 md:hidden"
           onClick={closeSidebar}
         ></div>
       )}
       
       {/* Sidebar - Now positioned absolutely within the centered container */}
-      <div className={`absolute md:relative top-0 left-0 z-50 w-64 h-full bg-blue-100/60 rounded-lg shadow-lg transform transition-transform duration-300 ease-in-out md:translate-x-0 ${
+      <div className={`absolute md:relative top-0 left-0 z-50 w-64 h-full bg-blue-100 md:bg-blue-100/70 rounded-lg shadow-lg transform transition-transform duration-300 ease-in-out md:translate-x-0 ${
         sidebarOpen ? 'translate-x-0' : '-translate-x-full'
       }`}>
         <div className="p-4 border-b border-gray-200 flex justify-between items-center">

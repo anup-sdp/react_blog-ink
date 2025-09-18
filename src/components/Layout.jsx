@@ -14,7 +14,7 @@ function Layout({ children }) {
         <div className="flex w-full max-w-7xl relative">
           <Sidebar />
           
-          <main className="flex-1 p-3 md:p-6 h-full w-full min-w-0 md:ml-[4px]">
+          <main className="flex-1 p-3 md:p-6 h-full w-full min-w-0">
             <div className="w-full">
               <div className="bg-white/60 rounded-xl shadow-xl p-3 md:p-6">
                 {children}

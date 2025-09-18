@@ -57,12 +57,12 @@ function MyPayments() {
     <Layout>
       <h1 className="text-2xl font-bold mb-6 text-gray-800">My Payments</h1>
       {user?.is_subscribed && (
-        <div className="bg-gradient-to-r from-orange-500 to-yellow-400 text-white p-6 rounded-xl mb-6">
+        <div className="bg-gradient-to-r from-yellow-500 to-orange-500 text-white p-6 rounded-xl mb-6">
           <p>You have already paid for premium subscription/content</p>
         </div>		
       )}
       {!user?.is_subscribed && (
-        <div className="bg-gradient-to-r from-yellow-400 to-orange-500 text-white p-6 rounded-xl mb-6">
+        <div className="bg-gradient-to-r from-yellow-500 to-orange-500 text-white p-6 rounded-xl mb-6">
           <h2 className="text-xl font-bold mb-2">Upgrade to Premium</h2>
           <p className="mb-4">Get access to exclusive premium content and features!</p>
           <p className="mb-4">Now only at 100 taka with one time payment!</p>

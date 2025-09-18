@@ -6,7 +6,7 @@ import Footer from './Footer';
 function Layout({ children }) {
   return (
     <div className="min-h-screen flex flex-col bg-cover bg-center bg-fixed" 
-         style={{ backgroundImage: "url('/images/background1.jpg')" }}>
+         style={{ backgroundImage: "url('/images/background2.png')" }}>
       <Navbar />
       
       {/* Centered container for sidebar + main */}

@@ -212,20 +212,19 @@ export function AuthProvider({ children }) {
 
   // Update profile
   const updateUserProfile = async (data) => {
-    setErrorMsg("");
-    try {
-      await authApiClient.patch("/auth/users/me/", data, {
-        headers: { "Content-Type": "application/json" },
-      });
-      setUser((prev) => ({ ...prev, ...data }));
-      return { success: true };
-    } catch (err) {
-      const message =
-        Object.values(err?.response?.data || {}).flat?.().join("\n") || "Update failed";
-      setErrorMsg(message);
-      return { success: false, message };
-    }
-  };
+  setErrorMsg("");
+  try {
+    const response = await authApiClient.patch("/auth/users/me/", data, {
+      headers: { "Content-Type": "application/json" },
+    });
+    setUser((prev) => ({ ...prev, ...data })); // Update local user state
+    return { success: true };
+  } catch (err) {
+    const message = Object.values(err?.response?.data || {}).flat?.().join("\n") || "Update failed";
+    setErrorMsg(message);
+    return { success: false, message };
+  }
+};
 
   // Change password
   const changePassword = async (payload) => {

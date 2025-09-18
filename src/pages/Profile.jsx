@@ -10,7 +10,12 @@ function Profile() {
   const toast = useToast();
   const [activeTab, setActiveTab] = useState('profile');
   
-  const { register: registerProfile, handleSubmit: handleSubmitProfile, formState: { errors: profileErrors }, reset } = useForm({
+  const { 
+    register: registerProfile, 
+    handleSubmit: handleSubmitProfile, 
+    formState: { errors: profileErrors }, 
+    reset 
+  } = useForm({
     defaultValues: {
       username: user?.username || '',
       email: user?.email || '',
@@ -22,7 +27,16 @@ function Profile() {
     }
   });
 
-  const { register: registerPassword, handleSubmit: handleSubmitPassword, formState: { errors: passwordErrors }, reset: resetPassword } = useForm();
+  const { 
+    register: registerPassword, 
+    handleSubmit: handleSubmitPassword, 
+    formState: { errors: passwordErrors }, 
+    reset: resetPassword,
+    watch 
+  } = useForm();
+
+  // Watch the new_password field for validation
+  const watchNewPassword = watch('new_password');
 
   useEffect(() => {
     if (user) {
@@ -39,21 +53,46 @@ function Profile() {
   }, [user, reset]);
 
   const onProfileSubmit = async (data) => {
-    const result = await updateUserProfile(data);
-    if (result.success) {
-      toast.addToast('Profile updated successfully', 'success');
-    } else {
-      toast.addToast(result.message, 'error');
+    console.log('Profile update data being sent:', data);
+    console.log('Current user data:', user);
+    
+    try {
+      const result = await updateUserProfile(data);
+      console.log('Profile update result:', result);
+      
+      if (result.success) {
+        toast.addToast('Profile updated successfully', 'success');
+      } else {
+        console.error('Profile update failed:', result.message);
+        toast.addToast(result.message || 'Profile update failed', 'error');
+      }
+    } catch (error) {
+      console.error('Profile update error:', error);
+      toast.addToast('An error occurred while updating profile', 'error');
     }
   };
 
   const onPasswordSubmit = async (data) => {
-    const result = await changePassword(data);
-    if (result.success) {
-      toast.addToast(result.message, 'success');
-      resetPassword();
-    } else {
-      toast.addToast(result.message, 'error');
+    console.log('Password change data:', {
+      current_password: data.current_password ? '***' : 'missing',
+      new_password: data.new_password ? '***' : 'missing',
+      re_new_password: data.re_new_password ? '***' : 'missing'
+    });
+    
+    try {
+      const result = await changePassword(data);
+      console.log('Password change result:', result);
+      
+      if (result.success) {
+        toast.addToast(result.message || 'Password changed successfully', 'success');
+        resetPassword();
+      } else {
+        console.error('Password change failed:', result.message);
+        toast.addToast(result.message || 'Password change failed', 'error');
+      }
+    } catch (error) {
+      console.error('Password change error:', error);
+      toast.addToast('An error occurred while changing password', 'error');
     }
   };
 
@@ -86,9 +125,10 @@ function Profile() {
               <input
                 type="text"
                 {...registerProfile('username', { required: 'Username is required' })}
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-gray-50"
                 disabled
               />
+              <p className="text-gray-500 text-sm mt-1">Username cannot be changed</p>
               {profileErrors.username && (
                 <p className="text-red-500 text-sm mt-1">{profileErrors.username.message}</p>
               )}
@@ -142,6 +182,7 @@ function Profile() {
                 type="text"
                 {...registerProfile('phone_number')}
                 className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                placeholder="Optional"
               />
               {profileErrors.phone_number && (
                 <p className="text-red-500 text-sm mt-1">{profileErrors.phone_number.message}</p>
@@ -154,6 +195,7 @@ function Profile() {
                 type="text"
                 {...registerProfile('location')}
                 className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                placeholder="Optional"
               />
               {profileErrors.location && (
                 <p className="text-red-500 text-sm mt-1">{profileErrors.location.message}</p>
@@ -167,6 +209,7 @@ function Profile() {
               {...registerProfile('bio')}
               rows="4"
               className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+              placeholder="Tell us about yourself (optional)"
             ></textarea>
             {profileErrors.bio && (
               <p className="text-red-500 text-sm mt-1">{profileErrors.bio.message}</p>
@@ -220,7 +263,10 @@ function Profile() {
               type="password"
               {...registerPassword('re_new_password', { 
                 required: 'Please confirm your new password',
-                validate: value => value === passwordErrors.new_password || 'Passwords do not match'
+                validate: value => {
+                  if (!watchNewPassword) return 'Please enter new password first';
+                  return value === watchNewPassword || 'Passwords do not match';
+                }
               })}
               className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
             />

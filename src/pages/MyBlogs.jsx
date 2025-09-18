@@ -18,19 +18,34 @@ function MyBlogs() {
   useEffect(() => {
     const fetchBlogs = async () => {
       try {
-        const response = await authApiClient.get('/posts/', {
-          params: { author: user.id }
+        // Fetch all blogs first
+        const response = await authApiClient.get('/posts/');
+        
+        // Filter blogs to show only those created by current user
+        const allBlogs = response.data.results || response.data;
+        const myBlogs = allBlogs.filter(blog => {
+          // Handle different possible author field structures
+          const authorId = blog.author?.id || blog.author_id || blog.author;
+          return authorId === user.id;
         });
-        setBlogs(response.data.results);
+        
+        console.log('All blogs:', allBlogs.length);
+        console.log('My blogs:', myBlogs.length);
+        console.log('User ID:', user.id);
+        
+        setBlogs(myBlogs);
       } catch (error) {
+        console.error('Error fetching blogs:', error);
         toast.addToast('Failed to fetch your blogs', 'error');
       } finally {
         setLoading(false);
       }
     };
 
-    fetchBlogs();
-  }, [user, toast]);
+    if (user?.id) {
+      fetchBlogs();
+    }
+  }, [user?.id, toast]);
 
   const handleDelete = async (id) => {
     if (window.confirm('Are you sure you want to delete this blog?')) {
@@ -39,6 +54,7 @@ function MyBlogs() {
         setBlogs(blogs.filter(blog => blog.id !== id));
         toast.addToast('Blog deleted successfully', 'success');
       } catch (error) {
+        console.error('Error deleting blog:', error);
         toast.addToast('Failed to delete blog', 'error');
       }
     }
@@ -96,7 +112,7 @@ function MyBlogs() {
                     <div className="text-sm font-medium text-gray-900">{blog.title}</div>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
-                    <div className="text-sm text-gray-500">{blog.category_name}</div>
+                    <div className="text-sm text-gray-500">{blog.category_name || blog.category?.name || 'No Category'}</div>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
                     <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${
@@ -120,18 +136,21 @@ function MyBlogs() {
                       <Link
                         to={`/blog/${blog.id}`}
                         className="text-blue-600 hover:text-blue-900"
+                        title="View Blog"
                       >
                         <FaEye />
                       </Link>
                       <Link
                         to={`/edit-blog/${blog.id}`}
                         className="text-indigo-600 hover:text-indigo-900"
+                        title="Edit Blog"
                       >
                         <FaEdit />
                       </Link>
                       <button
                         onClick={() => handleDelete(blog.id)}
                         className="text-red-600 hover:text-red-900"
+                        title="Delete Blog"
                       >
                         <FaTrash />
                       </button>

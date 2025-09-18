@@ -34,7 +34,7 @@ vercel: https://react-blog-ink.vercel.app/
 "password":"aB@12345"
 
 "username":"admin",
-"password":"1234"
+"password":"aB@12345"
 ===============
 github upload:
 git init
@@ -51,7 +51,7 @@ git commit -m "v1.3" // sidebar at leftmost, cards expanding fix,
 git push -u origin main
 ---
 git add .
-git commit -m "v2.2"
+git commit -m "v2.3"
 git push -u origin main
 ----
 see commit history: git log / git log --oneline

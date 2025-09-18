@@ -57,8 +57,8 @@ function MyPayments() {
     <Layout>
       <h1 className="text-2xl font-bold mb-6 text-gray-800">My Payments</h1>
       {user?.is_subscribed && (
-        <div className="bg-gradient-to-r from-yellow-400 to-orange-500 text-white p-6 rounded-xl mb-6">
-          <p className="mb-4">You have already for premium content</p>
+        <div className="bg-gradient-to-r from-orange-500 to-yellow-400 text-white p-6 rounded-xl mb-6">
+          <p>You have already paid for premium subscription/content</p>
         </div>		
       )}
       {!user?.is_subscribed && (

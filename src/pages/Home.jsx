@@ -2,65 +2,31 @@
 import { useEffect, useState } from 'react';
 import CardSlider from '../components/CardSlider';
 import useAuthContext from '../hooks/useAuthContext';
-import authApiClient from '../services/auth-api-client';
-import { isAuthenticated } from '../utils/auth';
+import { useDataCache } from '../context/DataCacheContext';
 import Layout from '../components/Layout';
 
 function Home() {
   const { user } = useAuthContext();
-  const [admins, setAdmins] = useState([]);
-  const [users, setUsers] = useState([]);
-  const [categories, setCategories] = useState([]);
-  const [freeBlogs, setFreeBlogs] = useState([]);
-  const [premiumBlogs, setPremiumBlogs] = useState([]);
-  const [trendingBlogs, setTrendingBlogs] = useState([]);
+  const { fetchHomeData } = useDataCache();
+  const [data, setData] = useState({
+    admins: [],
+    users: [],
+    categories: [],
+    freeBlogs: [],
+    premiumBlogs: [],
+    trendingBlogs: [],
+  });
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const fetchData = async () => {
+    const loadData = async () => {
       setLoading(true);
       try {
-        // Only fetch user data if user is authenticated
-        if (isAuthenticated()) {
-          console.log("User is authenticated, fetching user data...");
-          // Fetch all users and filter on frontend
-          const allUsersRes = await authApiClient.get('/users/');
-          const allUsers = allUsersRes.data.results || allUsersRes.data;
-          const adminUsers = allUsers.filter(user => user.is_staff === true);
-          const regularUsers = allUsers.filter(user => user.is_staff === false);
-          setAdmins(adminUsers);
-          setUsers(regularUsers);
-        } else {
-          console.log("User is not authenticated, skipping user data fetch");
-          setAdmins([]);
-          setUsers([]);
-        }
-        
-        // Fetch categories (public data)
-        const categoriesRes = await authApiClient.get('/categories/');
-        console.log("Categories data:", categoriesRes.data);
-        setCategories(categoriesRes.data.results);
-
-        // Fetch free blogs (public data)
-        const freeBlogsRes = await authApiClient.get('/posts/free-blogs/');
-        console.log("Free blogs data:", freeBlogsRes.data);
-        setFreeBlogs(freeBlogsRes.data);
-
-        // Fetch premium blogs (if user is subscribed or staff)
-        if (user && (user.is_subscribed || user.is_staff)) {
-          const premiumBlogsRes = await authApiClient.get('/posts/premium-blogs/');
-          console.log("Premium blogs data:", premiumBlogsRes.data);
-          setPremiumBlogs(premiumBlogsRes.data);
-        }
-
-        // Fetch trending blogs (public data)
-        const trendingBlogsRes = await authApiClient.get('/posts/');
-        console.log("Trending blogs data:", trendingBlogsRes.data);
-        setTrendingBlogs(trendingBlogsRes.data.results);
+        const homeData = await fetchHomeData(user);
+        setData(homeData);
       } catch (error) {
-        console.error('Error fetching data:', error);
+        console.error('Error loading home data:', error);
         
-        // If we get a 401 error, clear the tokens and redirect to login
         if (error.response?.status === 401) {
           console.log("Received 401 error, clearing tokens");
           localStorage.removeItem("authTokens");
@@ -71,8 +37,8 @@ function Home() {
       }
     };
 
-    fetchData();
-  }, [user]);
+    loadData();
+  }, [user?.id, user?.is_subscribed, user?.is_staff, fetchHomeData]); // Only re-run when user changes
 
   if (loading) {
     return (
@@ -88,6 +54,8 @@ function Home() {
   return (
     <Layout>
       <div className="space-y-6 md:space-y-8 w-full">
+        {/* All your existing JSX remains the same, just using data from state */}
+        
         {/* Blogging History Section */}
         <section className="bg-gradient-to-r from-indigo-50 to-purple-50 p-4 md:p-8 rounded-2xl shadow-xl w-full">
           <h2 className="text-2xl md:text-3xl font-bold mb-4 text-gray-800">The History of Blogging</h2>
@@ -110,7 +78,7 @@ function Home() {
         <section className="bg-blue-50 p-4 md:p-6 rounded-2xl shadow-lg w-full overflow-hidden">
           <h2 className="text-xl md:text-2xl font-bold mb-4 text-gray-800">Our Admins</h2>
           <div className="w-full overflow-hidden">
-            <CardSlider items={admins} type="user" />
+            <CardSlider items={data.admins} type="user" />
           </div>
         </section>
 
@@ -118,7 +86,7 @@ function Home() {
         <section className="bg-green-50 p-4 md:p-6 rounded-2xl shadow-lg w-full overflow-hidden">
           <h2 className="text-xl md:text-2xl font-bold mb-4 text-gray-800">Our Users</h2>
           <div className="w-full overflow-hidden">
-            <CardSlider items={users} type="user" />
+            <CardSlider items={data.users} type="user" />
           </div>
         </section>
 
@@ -126,7 +94,7 @@ function Home() {
         <section className="bg-yellow-50 p-4 md:p-6 rounded-2xl shadow-lg w-full overflow-hidden">
           <h2 className="text-xl md:text-2xl font-bold mb-4 text-gray-800">Categories</h2>
           <div className="w-full overflow-hidden">
-            <CardSlider items={categories} type="category" />
+            <CardSlider items={data.categories} type="category" />
           </div>
         </section>
 
@@ -134,7 +102,7 @@ function Home() {
         <section className="bg-pink-50 p-4 md:p-6 rounded-2xl shadow-lg w-full overflow-hidden">
           <h2 className="text-xl md:text-2xl font-bold mb-4 text-gray-800">Free Blogs</h2>
           <div className="w-full overflow-hidden">
-            <CardSlider items={freeBlogs} type="blog" />
+            <CardSlider items={data.freeBlogs} type="blog" />
           </div>
         </section>
 
@@ -148,7 +116,7 @@ function Home() {
               </span>
             </div>
             <div className="w-full overflow-hidden">
-              <CardSlider items={premiumBlogs} type="blog" />
+              <CardSlider items={data.premiumBlogs} type="blog" />
             </div>
           </section>
         ) : (
@@ -165,7 +133,7 @@ function Home() {
         <section className="bg-indigo-50 p-4 md:p-6 rounded-2xl shadow-lg w-full overflow-hidden">
           <h2 className="text-xl md:text-2xl font-bold mb-4 text-gray-800">Trending Blogs</h2>
           <div className="w-full overflow-hidden">
-            <CardSlider items={trendingBlogs} type="blog" />
+            <CardSlider items={data.trendingBlogs} type="blog" />
           </div>
         </section>
       </div>
@@ -174,3 +142,46 @@ function Home() {
 }
 
 export default Home;
+
+/*
+Here are all the valid ways to use useDataCache():
+
+Method 1: Destructuring 
+const { fetchHomeData, isLoading, clearCache, refreshData } = useDataCache();
+
+Method 2: Single object 
+const udc = useDataCache();
+udc.fetchHomeData(user)
+udc.isLoading('categories')
+udc.clearCache(['users'])
+udc.refreshData('freeBlogs')
+
+Method 3: Mixed approach
+const dataCache = useDataCache();
+const { fetchHomeData } = dataCache; // Destructure only what you use frequently
+
+All Available Functions from DataCacheContext:
+const allFunctions = useDataCache();
+// Available functions:
+allFunctions.fetchHomeData(user)           // Main function to get home page data
+allFunctions.fetchWithCache(key, fn, deps) // Generic caching function
+allFunctions.clearCache(keys)              // Clear specific or all cache
+allFunctions.refreshData(key, deps)        // Force refresh specific data
+allFunctions.isLoading(key, deps)          // Check if data is being fetched
+allFunctions.isCached(key, deps)           // Check if data exists in cache
+*/
+
+
+/*
+Step: Optional - Add cache invalidation to other components
+For example, in MyPayments.jsx, you can refresh payment-related cache:
+
+In any component that modifies data:
+const { clearCache, refreshData } = useDataCache();
+
+After successful payment:
+refreshData('premiumBlogs', [user.is_subscribed, user.is_staff]);
+
+After user subscription changes:
+clearCache(['premiumBlogs', 'users']);
+*/

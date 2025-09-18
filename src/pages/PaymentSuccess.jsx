@@ -2,38 +2,50 @@
 import { useEffect } from 'react';
 import { useNavigate } from 'react-router';
 import useAuthContext from '../hooks/useAuthContext';
+import { useDataCache } from '../context/DataCacheContext';
 import useToast from '../hooks/useToast';
 
 function PaymentSuccess() {
   const navigate = useNavigate();
-  const { fetchUserProfile } = useAuthContext();
+  const { user, fetchUserProfile } = useAuthContext();
   const toast = useToast();
+  const udc = useDataCache();
 
   useEffect(() => {
     const handlePaymentSuccess = async () => {
       try {
-        // Refresh user profile to update subscription status
+        // 1. First refresh user profile to update subscription status
         await fetchUserProfile();
+        
+        // 2. Then clear cache for data that depends on subscription status
+        // Clear premiumBlogs cache so it will be refetched with new subscription status
+        udc.clearCache(['premiumBlogs']);
+        
+        // 3. If you also fetch user lists that show subscription status, clear users cache
+        udc.clearCache(['users']);
+        
+        // 4. Show success message
         toast.addToast('Payment successful! Your subscription is now active.', 'success');
         
-        // Get return URL from sessionStorage or default to my-payments
+        // 5. Handle redirect
         const returnURL = sessionStorage.getItem('paymentReturnUrl') || '/my-payments';
         sessionStorage.removeItem('paymentReturnUrl');
         
-        // Redirect to return URL after a short delay
+        // Redirect after a short delay
         setTimeout(() => {
           navigate(returnURL);
-        }, 3000);
+        }, 5000);
       } catch (error) {
+        console.error('Error updating profile after payment:', error);
         toast.addToast('Payment was successful but failed to update profile. Please contact support.', 'warning');
         setTimeout(() => {
           navigate('/my-payments');
-        }, 3000);
+        }, 5000);
       }
     };
 
     handlePaymentSuccess();
-  }, [fetchUserProfile, navigate, toast]);
+  }, [fetchUserProfile, navigate, toast, udc]); // Added missing dependencies
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50">

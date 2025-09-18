@@ -7,14 +7,17 @@ import AppRoutes from './AppRoutes';
 import { AuthProvider } from './context/AuthContext';
 import { ToastProvider } from './context/ToastContext';
 import { SidebarProvider } from './context/SidebarContext';
+import { DataCacheProvider } from './context/DataCacheContext';
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
     <ToastProvider>
       <BrowserRouter>
         <SidebarProvider>
-          <AuthProvider>          
-            <AppRoutes />          
+          <AuthProvider>
+            <DataCacheProvider>
+              <AppRoutes />
+            </DataCacheProvider>
           </AuthProvider>
         </SidebarProvider>    
       </BrowserRouter>

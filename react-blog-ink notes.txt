@@ -51,7 +51,7 @@ git commit -m "v1.3" // sidebar at leftmost, cards expanding fix,
 git push -u origin main
 ---
 git add .
-git commit -m "v2.0"
+git commit -m "v2.1"
 git push -u origin main
 ----
 see commit history: git log / git log --oneline

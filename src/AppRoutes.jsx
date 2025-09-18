@@ -88,3 +88,10 @@ function AppRoutes() {
 }
 
 export default AppRoutes;
+
+
+/*
+Outlet
+React Router's Outlet component does preserve the state of nested routes when navigating between them.
+implement it in Layout
+*/

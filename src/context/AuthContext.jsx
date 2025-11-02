@@ -316,3 +316,11 @@ export function AuthProvider({ children }) { // --------------------------------
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 }
+
+/**
+ * note: storing access/refresh tokens in localStorage/sessionStorage is vulnerable to (XSS - Cross-Site Scripting),
+ * try using httpOnly cookie - needs backend django modification.
+ * if still wanna use them, 
+ * use Complete HTML Sanitization in django view/ Django Serializer with Validation/ Middleware for Global Protection/
+ * Frontend Protection(React Safe Display)/ sanitize_user_input(text)
+ */

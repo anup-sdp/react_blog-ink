@@ -16,9 +16,9 @@ import PasswordResetConfirm from './pages/PasswordResetConfirm';
 import PaymentSuccess from './pages/PaymentSuccess';
 import PaymentFail from './pages/PaymentFail';
 import PaymentCancel from './pages/PaymentCancel';
-import ProtectedRoute from './components/ProtectedRoute';
-import AdminRoute from './components/AdminRoute';
 import BlogDetail from './pages/BlogDetails';
+import AdminRoute from './components/AdminRoute';
+import ProtectedRoute from './components/ProtectedRoute';
 
 function AppRoutes() {
   return (
@@ -32,31 +32,16 @@ function AppRoutes() {
       <Route path="/payment/fail" element={<PaymentFail />} />
       <Route path="/payment/cancel" element={<PaymentCancel />} />
       
-      {/* Protected Routes */}
-      <Route path="/profile" element={
-        <ProtectedRoute>
-          <Profile />
-        </ProtectedRoute>
-      } />
+      {/* admin Routes */}
       <Route path="/admin-profile" element={
         <AdminRoute>
           <AdminProfile />
         </AdminRoute>
       } />
-      <Route path="/my-payments" element={
-        <ProtectedRoute>
-          <MyPayments />
-        </ProtectedRoute>
-      } />
       <Route path="/all-payments" element={
         <AdminRoute>
           <AllPayments />
         </AdminRoute>
-      } />
-      <Route path="/my-blogs" element={
-        <ProtectedRoute>
-          <MyBlogs />
-        </ProtectedRoute>
       } />
       <Route path="/all-blogs" element={
         <AdminRoute>
@@ -67,6 +52,23 @@ function AppRoutes() {
         <AdminRoute>
           <CategoryManagement />
         </AdminRoute>
+      } />
+      
+      {/* Protected Routes */}
+      <Route path="/profile" element={
+        <ProtectedRoute>
+          <Profile />
+        </ProtectedRoute>
+      } />      
+      <Route path="/my-payments" element={
+        <ProtectedRoute>
+          <MyPayments />
+        </ProtectedRoute>
+      } />      
+      <Route path="/my-blogs" element={
+        <ProtectedRoute>
+          <MyBlogs />
+        </ProtectedRoute>
       } />
       <Route path="/create-blog" element={
         <ProtectedRoute>

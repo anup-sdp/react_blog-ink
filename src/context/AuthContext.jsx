@@ -26,7 +26,13 @@ function isTokenExpired(token) {
   }
 }
 
-export function AuthProvider({ children }) {
+function getRefreshToken(tokens) {
+  if (tokens?.refresh) return tokens.refresh;
+  if (tokens?.refresh_token) return tokens.refresh_token; // Alternative key name
+  return null;
+}
+
+export function AuthProvider({ children }) { // -----------------------------------------------
   const navigate = useNavigate();
   const [authTokens, setAuthTokens] = useState(() => parseStoredToken());
   const [user, setUser] = useState(null);
@@ -43,7 +49,7 @@ export function AuthProvider({ children }) {
     setAuthTokens(tokens);
   }, []);
 
-  // Refresh access token using refresh token
+  // Refresh access token using refresh token -----------------------------
   const refreshAccessToken = useCallback(
     async (refreshToken) => {
       if (!refreshToken) throw new Error("No refresh token available");
@@ -55,7 +61,7 @@ export function AuthProvider({ children }) {
     [authTokens, saveTokens]
   );
 
-  // Logout - now using navigate instead of window.location.replace
+  // Logout -  using navigate instead of window.location.replace
   const logoutUser = useCallback(() => {
     console.log("Logging out user");
     saveTokens(null);
@@ -63,19 +69,18 @@ export function AuthProvider({ children }) {
     setErrorMsg("");
     // FIX: Use navigate instead of window.location.replace
     navigate("/login", { replace: true });
-  }, [saveTokens, navigate]);
-
-  // Fetch current user profile
+  }, [saveTokens, navigate]);  
+  
+  // Fetch current user profile  
   const fetchUserProfile = useCallback(
     async (tokens = null) => {
       const tokensToUse = tokens || authTokens;
       if (!tokensToUse?.access) {
-        console.log("error: no access token!");
-        return;
+        throw new Error("No access token available");
       }
       
       try {
-        console.log("Fetching user profile...");
+        console.log("Fetching user profile..."); // ------- printing repeatedly
         const resp = await authApiClient.get("/auth/users/me/");
         console.log("Profile fetch successful:", resp.data);
         setUser(resp.data);
@@ -84,81 +89,112 @@ export function AuthProvider({ children }) {
         console.log("Profile fetch failed:", err?.response?.status, err?.response?.data);
         const status = err?.response?.status;
         
-        if (status === 401 && tokensToUse?.refresh && !isTokenExpired(tokensToUse.refresh)) {
-          try {
-            console.log("Attempting token refresh...");
-            const newTokens = await refreshAccessToken(tokensToUse.refresh);
-            // Retry with new token
-            const retry = await authApiClient.get("/auth/users/me/");
-            console.log("Retry successful after refresh:", retry.data);
-            setUser(retry.data);
-            return retry.data;
-          } catch (refreshErr) {
-            console.warn("Refresh failed while fetching profile", refreshErr);
-            // During login, don't automatically logout - let login handle the error
-            throw refreshErr;
+        if (status === 401) {
+          const refreshToken = getRefreshToken(tokensToUse);
+          
+          if (refreshToken && !isTokenExpired(refreshToken)) {
+            try {
+              console.log("Attempting token refresh...");
+              const newTokens = await refreshAccessToken(refreshToken); //
+              
+              const retry = await authApiClient.get("/auth/users/me/");
+              console.log("Retry successful after refresh:", retry.data);
+              setUser(retry.data);
+              return retry.data;
+            } catch (refreshErr) {
+              console.warn("Token refresh failed:", refreshErr);
+              
+              // Set user-friendly error message
+              setErrorMsg("Your session has expired. Please log in again.");
+              
+              logoutUser();
+              throw refreshErr;
+            }
+          } else {
+            console.warn("No valid refresh token, logging out");
+            
+            // Set user-friendly error message  
+            setErrorMsg("Your session has expired. Please log in again.");
+            
+            logoutUser();
+            throw err;
           }
+        } else if (status === 500) {
+          // Set server error message
+          setErrorMsg("Server error. Please try again later.");
+        } else if (err.message === "Network Error") {
+          // Set network error message
+          setErrorMsg("Connection error. Please check your internet connection.");
         } else {
-          console.warn("Failed fetching profile", err);
-          throw err;
+          // Set generic error message
+          setErrorMsg("Failed to load user profile. Please try again.");
         }
+        
+        console.warn("Failed fetching profile", err);
+        throw err;
       }
     },
-    [authTokens, refreshAccessToken]
+    [authTokens, refreshAccessToken]  // , logoutUser
+	// ^ for using useCallback Only recreated when dependencies change, instead of recreated on every render
   );
 
-  // Initialize on mount
+  // Initialize on mount - fixed
   useEffect(() => {
     let mounted = true;
-    (async () => {
+    
+    const initializeAuth = async () => {
       const tokens = parseStoredToken();
+      
       if (!tokens) {
+        console.log("No tokens found in localStorage");
         if (mounted) {
           setIsLoading(false);
         }
         return;
       }
 
-      // If access token expired, try refresh; otherwise fetch profile
-      if (isTokenExpired(tokens.access)) {
-        if (!isTokenExpired(tokens.refresh)) {
-          try {
-            const newTokens = await refreshAccessToken(tokens.refresh);
-            if (mounted) await fetchUserProfile(newTokens);
-          } catch (err) {
-            console.log("Token refresh failed during init, clearing tokens");
-            if (mounted) {
-              saveTokens(null);
-              setUser(null);
-            }
-          } finally {
-            if (mounted) setIsLoading(false);
-          }
-        } else {
-          // Both tokens expired
-          console.log("Both tokens expired, clearing");
-          if (mounted) {
-            saveTokens(null);
-            setUser(null);
-            setIsLoading(false);
-          }
-        }
-      } else {
-        try {
+      console.log("Tokens found, checking validity...");
+      const accessToken = tokens.access;
+      const refreshToken = getRefreshToken(tokens);
+
+      try {
+        // If access token is valid, fetch user profile
+        if (!isTokenExpired(accessToken)) {
+          console.log("Access token valid, fetching profile");
           await fetchUserProfile(tokens);
-        } catch (err) {
-          console.log("Initial profile fetch failed");
-          // Don't clear tokens on initial fetch failure
-        } finally {
-          if (mounted) setIsLoading(false);
+        }
+        // If access token expired but refresh token valid, try to refresh
+        else if (refreshToken && !isTokenExpired(refreshToken)) {
+          console.log("Access token expired, trying to refresh");
+          const newTokens = await refreshAccessToken(refreshToken);
+          await fetchUserProfile(newTokens);
+        }
+        // Both tokens expired
+        else {
+          console.log("Both tokens expired, clearing");
+          saveTokens(null);
+          setUser(null);
+        }
+      } catch (err) {
+        console.log("Initialization failed:", err);
+        if (mounted) {
+          saveTokens(null);
+          setUser(null);
+        }
+      } finally {
+        if (mounted) {
+          setIsLoading(false);
         }
       }
-    })();
+    };
+
+    initializeAuth();
 
     return () => {
       mounted = false;
     };
-  }, [refreshAccessToken, fetchUserProfile, saveTokens]);
+  }, [refreshAccessToken, fetchUserProfile, saveTokens]); //
+
 
   // Login
   const loginUser = async (credentials) => {
@@ -273,19 +309,9 @@ export function AuthProvider({ children }) {
   };
 
   const value = {
-    user,
-    authTokens,
-    errorMsg,
-    isLoading,
-    loginUser,
-    registerUser,
-    logoutUser,
-    fetchUserProfile,
-    updateUserProfile,
-    changePassword,
-    resendActivationEmail,
-    requestPasswordReset,
-    confirmPasswordReset,
+    user, authTokens, errorMsg, isLoading,
+    loginUser, registerUser, logoutUser, 
+	fetchUserProfile, updateUserProfile, changePassword, resendActivationEmail, requestPasswordReset, confirmPasswordReset,
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

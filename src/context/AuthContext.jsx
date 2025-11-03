@@ -13,8 +13,14 @@ function parseStoredToken() {
   return raw ? JSON.parse(raw) : null;
 }
 
+function getRefreshToken(tokens) {
+  if (tokens?.refresh) return tokens.refresh;
+  if (tokens?.refresh_token) return tokens.refresh_token; // Alternative key name
+  return null;
+}
+
 // Decode JWT and check expiry
-function isTokenExpired(token) {
+function isTokenExpired(token) { // both access and refresh
   if (!token) return true;
   try {
     const payload = JSON.parse(atob(token.split(".")[1]));
@@ -26,15 +32,8 @@ function isTokenExpired(token) {
   }
 }
 
-function getRefreshToken(tokens) {
-  if (tokens?.refresh) return tokens.refresh;
-  if (tokens?.refresh_token) return tokens.refresh_token; // Alternative key name
-  return null;
-}
-
 export function AuthProvider({ children }) { // -----------------------------------------------
-  const navigate = useNavigate();
-  const [authTokens, setAuthTokens] = useState(() => parseStoredToken());
+  const navigate = useNavigate();  
   const [user, setUser] = useState(null);
   const [errorMsg, setErrorMsg] = useState("");
   const [isLoading, setIsLoading] = useState(true);
@@ -45,20 +44,34 @@ export function AuthProvider({ children }) { // --------------------------------
       localStorage.setItem(LOCAL_KEY, JSON.stringify(tokens));
     } else {
       localStorage.removeItem(LOCAL_KEY);
-    }
-    setAuthTokens(tokens);
+    }    
   }, []);
 
   // Refresh access token using refresh token -----------------------------
   const refreshAccessToken = useCallback(
-    async (refreshToken) => {
+    async (refreshTokenParam = null) => {
+      const stored = parseStoredToken() || {};
+      const refreshToken = refreshTokenParam || getRefreshToken(stored);
       if (!refreshToken) throw new Error("No refresh token available");
-      const resp = await apiClient.post("/auth/jwt/refresh/", { refresh: refreshToken });
-      const newTokens = { ...authTokens, access: resp.data.access };
-      saveTokens(newTokens);
-      return newTokens;
+  
+      try {
+        const resp = await apiClient.post("/auth/jwt/refresh/", { refresh: refreshToken });
+        // Build new token object using latest stored tokens
+        const latest = parseStoredToken() || stored || {};
+        const newTokens = {
+          ...latest,
+          access: resp.data.access,
+          // some backends return a new refresh token, some don't:
+          refresh: resp.data.refresh || latest.refresh || refreshToken,
+        };
+        saveTokens(newTokens);
+        return newTokens;
+      } catch (err) {
+        // bubble up so callers can logout etc.
+        throw err;
+      }
     },
-    [authTokens, saveTokens]
+    [saveTokens]
   );
 
   // Logout -  using navigate instead of window.location.replace
@@ -72,24 +85,22 @@ export function AuthProvider({ children }) { // --------------------------------
   }, [saveTokens, navigate]);  
   
   // Fetch current user profile  
-  const fetchUserProfile = useCallback(
-    async (tokens = null) => {
-      const tokensToUse = tokens || authTokens;
-      if (!tokensToUse?.access) {
-        throw new Error("No access token available");
-      }
+  const fetchUserProfile = useCallback( 
+    async (tokensParam = null) => {
+      const tokensToUse = tokensParam || parseStoredToken();      
+	  if (!tokensToUse?.access) throw new Error("No access token available");
       
       try {
-        console.log("Fetching user profile..."); // ------- printing repeatedly
+        console.log("Fetching user profile..."); ///
         const resp = await authApiClient.get("/auth/users/me/");
         console.log("Profile fetch successful:", resp.data);
         setUser(resp.data);
         return resp.data;
       } catch (err) {
-        console.log("Profile fetch failed:", err?.response?.status, err?.response?.data);
-        const status = err?.response?.status;
+		const status = err?.response?.status;
+		console.log("Profile fetch failed:", status, err?.response?.data);        
         
-        if (status === 401) {
+        if (status === 401) { // unauthorized, expied access token
           const refreshToken = getRefreshToken(tokensToUse);
           
           if (refreshToken && !isTokenExpired(refreshToken)) {
@@ -102,31 +113,24 @@ export function AuthProvider({ children }) { // --------------------------------
               setUser(retry.data);
               return retry.data;
             } catch (refreshErr) {
-              console.warn("Token refresh failed:", refreshErr);
-              
+              console.warn("Token refresh failed:", refreshErr);              
               // Set user-friendly error message
-              setErrorMsg("Your session has expired. Please log in again.");
-              
-              logoutUser();
-              throw refreshErr;
+              setErrorMsg("Your session has expired. Please log in again.");              
+              logoutUser(); /// ---
+              throw refreshErr; // caught by fetchUserProfile caller
             }
           } else {
-            console.warn("No valid refresh token, logging out");
-            
+            console.warn("No valid refresh token, logging out");            
             // Set user-friendly error message  
-            setErrorMsg("Your session has expired. Please log in again.");
-            
-            logoutUser();
-            throw err;
+            setErrorMsg("Your session has expired. Please log in again.");            
+            logoutUser(); /// ---
+            throw err; // outside try catch ? no when calling fetchUserProfile, its inside try block
           }
-        } else if (status === 500) {
-          // Set server error message
+        } else if (status === 500) { // server error           
           setErrorMsg("Server error. Please try again later.");
-        } else if (err.message === "Network Error") {
-          // Set network error message
+        } else if (err.message === "Network Error") {          
           setErrorMsg("Connection error. Please check your internet connection.");
-        } else {
-          // Set generic error message
+        } else { // generic error message          
           setErrorMsg("Failed to load user profile. Please try again.");
         }
         
@@ -134,8 +138,12 @@ export function AuthProvider({ children }) { // --------------------------------
         throw err;
       }
     },
-    [authTokens, refreshAccessToken]  // , logoutUser
+    [refreshAccessToken, logoutUser]  
 	// ^ for using useCallback Only recreated when dependencies change, instead of recreated on every render
+	// ask: should i include logoutUser in dependency of fetchUserProfile, why
+	// React Rule (useCallback): if a useCallback function uses a variable/function from scope, it must be in the dependency array.
+	// to avoid stale closure
+	// If your effect uses a function defined in the component, include it in the dependency array. Whether or not it’s wrapped in useCallback.
   );
 
   // Initialize on mount - fixed
@@ -214,7 +222,7 @@ export function AuthProvider({ children }) { // --------------------------------
         await fetchUserProfile(tokens);
         console.log("Profile fetch after login successful");
       } catch (profileErr) {
-        console.log("Profile fetch after login failed, but login was successful");
+        console.log("Profile fetch after login failed, but login was successful", profileErr);
         // Profile will be fetched later or on next app load
       }
       
@@ -309,9 +317,9 @@ export function AuthProvider({ children }) { // --------------------------------
   };
 
   const value = {
-    user, authTokens, errorMsg, isLoading,
+    user, errorMsg, isLoading,
     loginUser, registerUser, logoutUser, 
-	fetchUserProfile, updateUserProfile, changePassword, resendActivationEmail, requestPasswordReset, confirmPasswordReset,
+    fetchUserProfile, updateUserProfile, changePassword, resendActivationEmail, requestPasswordReset, confirmPasswordReset,
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

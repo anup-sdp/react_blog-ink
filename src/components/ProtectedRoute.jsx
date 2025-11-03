@@ -11,7 +11,11 @@ function ProtectedRoute({ children }) {
       </div>
     );
   }  
-  return user ? children : <Navigate to="/login" replace />;
+  //return user ? children : <Navigate to="/login" replace />;
+  if (!user) {
+    return <Navigate to="/login" replace />;
+  }
+  return children;
 }
 
 export default ProtectedRoute;

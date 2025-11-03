@@ -19,3 +19,5 @@ authApiClient.interceptors.request.use(
   },
   (error) => Promise.reject(error)
 );
+
+// can also use a Response interceptor to handle token refresh on 401 errors

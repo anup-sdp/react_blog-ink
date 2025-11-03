@@ -24,3 +24,8 @@ createRoot(document.getElementById('root')).render(
     </ToastProvider>
   </StrictMode>
 );
+
+/*
+  notes:
+    to show messages we can use react-toastify
+*/

@@ -4,6 +4,7 @@ import CardSlider from '../components/CardSlider';
 import useAuthContext from '../hooks/useAuthContext';
 import { useDataCache } from '../context/DataCacheContext';
 import Layout from '../components/Layout';
+import { Link } from 'react-router';
 
 function Home() {
   const { user } = useAuthContext();
@@ -77,14 +78,35 @@ function Home() {
         {/* Admins Section */}
         <section className="bg-blue-50 p-4 md:p-6 rounded-2xl shadow-lg w-full overflow-hidden">
           <h2 className="text-xl md:text-2xl font-bold mb-4 text-gray-800">Our Admins</h2>
-          <div className="w-full overflow-hidden">
-            <CardSlider items={data.admins} type="user" />
-          </div>
+          {!user && (
+          	<p className="text-gray-700 text-center">
+              <Link to="/login" className="text-blue-600 hover:text-blue-800 font-medium">
+                Sign in
+              </Link> to view our community
+            </p>
+          )}
+          {user && (
+            <div className="w-full overflow-hidden">
+              <CardSlider items={data.admins} type="user" />
+            </div>
+          )}
+          
         </section>
 
         {/* Users Section */}
         <section className="bg-green-50 p-4 md:p-6 rounded-2xl shadow-lg w-full overflow-hidden">
           <h2 className="text-xl md:text-2xl font-bold mb-4 text-gray-800">Our Users</h2>
+          {user? (
+            <div className="w-full overflow-hidden">
+              <CardSlider items={data.users} type="user" />
+            </div>
+          ):(
+            <p className="text-gray-700 text-center">
+              <Link to="/login" className="text-blue-600 hover:text-blue-800 font-medium">
+                Sign in
+              </Link> to view our community
+            </p>
+          )}
           <div className="w-full overflow-hidden">
             <CardSlider items={data.users} type="user" />
           </div>

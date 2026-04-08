@@ -10,7 +10,7 @@ import AllPayments from './pages/AllPayments';
 import MyBlogs from './pages/MyBlogs';
 import AllBlogs from './pages/AllBlogs';
 import BlogForm from './pages/BlogForm';
-import CategoryManagement from './pages/CategoryManagement'; // Add this import
+import CategoryManagement from './pages/CategoryManagement'; // added
 import Activate from './pages/Activate';
 import PasswordResetConfirm from './pages/PasswordResetConfirm';
 import PaymentSuccess from './pages/PaymentSuccess';

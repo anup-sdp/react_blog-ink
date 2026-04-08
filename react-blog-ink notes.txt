@@ -31,7 +31,7 @@ npm i -D daisyui@latest
 
 vercel: https://react-blog-ink.vercel.app/
 "username":"anup",
-"password":"aB@12345"
+"password":"aB@123456"
 
 "username":"admin",
 "password":"aB@12345"
@@ -46,12 +46,9 @@ git branch -M main
 git remote add origin https://github.com/anup-sdp/react_blog-ink.git
 git push -u origin main
 ------------
+...
 git add .
-git commit -m "v1.3" // sidebar at leftmost, cards expanding fix,
-git push -u origin main
----
-git add .
-git commit -m "v2.9"
+git commit -m "v3.1 adjust spacing in Layout"
 git push -u origin main
 ----
 see commit history: git log / git log --oneline

@@ -54,6 +54,7 @@ function Home() {
 
   return (
     <Layout>
+        {/* ^ Layout is imported from '../components/Layout' */}
       <div className="space-y-6 md:space-y-8 w-full">
         {/* All your existing JSX remains the same, just using data from state */}
         
@@ -107,9 +108,6 @@ function Home() {
               </Link> to view our community
             </p>
           )}
-          <div className="w-full overflow-hidden">
-            <CardSlider items={data.users} type="user" />
-          </div>
         </section>
 
         {/* Categories Section */}
